@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "/home/yusuke/Documents/github/pose_estimation_flutter/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-night-v8/values-night-v8.xml",
+            "outputFile": "/home/yusuke/Documents/Github/pose_estimation_flutter/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-night-v8/values-night-v8.xml",
             "map": [
                 {
-                    "source": "/home/yusuke/Documents/github/pose_estimation_flutter/android/app/src/main/res/values-night/styles.xml",
+                    "source": "/home/yusuke/Documents/Github/pose_estimation_flutter/android/app/src/main/res/values-night/styles.xml",
                     "from": {
                         "startLines": "3,14",
                         "startColumns": "4,4",

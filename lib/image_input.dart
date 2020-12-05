@@ -17,7 +17,7 @@ class ImageInput extends StatefulWidget {
 }
 
 class _ImageInputState extends State<ImageInput> {
-  File _storedImage;
+  // File _storedImage;
   final picker = ImagePicker();
   String resultText = '';
   bool isHotdog = false;
@@ -36,9 +36,6 @@ class _ImageInputState extends State<ImageInput> {
     if (imageFile == null) {
       return;
     }
-    setState(() {
-      _storedImage = File(imageFile.path);
-    });
     predictHotdog(File(imageFile.path));
   }
 
@@ -52,9 +49,6 @@ class _ImageInputState extends State<ImageInput> {
     if (imageFile == null) {
       return;
     }
-    setState(() {
-      _storedImage = File(imageFile.path);
-    });
     predictHotdog(File(imageFile.path));
   }
 
@@ -62,9 +56,8 @@ class _ImageInputState extends State<ImageInput> {
     Tflite.close();
     try {
       await Tflite.loadModel(
-          model:
-              'assets/posenet_mobilenet_v1_100_257x257_multi_kpt_stripped.tflite',
-          labels: 'assets/labels.txt');
+        model: 'assets/posenet_mv1_075_float_from_checkpoints.tflite',
+      );
     } on PlatformException {
       print("Failed to load the model");
     }
@@ -76,23 +69,24 @@ class _ImageInputState extends State<ImageInput> {
     // Prediction
     List recognition = await Tflite.runPoseNetOnImage(
       path: imageFile.path,
-      imageMean: 117, // defaults to 117.0
-      imageStd: 117, // defaults to 1.0
+      imageMean: 125.0, // defaults to 117.0
+      imageStd: 125.0, // defaults to 1.0
       numResults: 2, // defaults to 5
-      threshold: 0.2, // defaults to 0.1
+      threshold: 0.7, // defaults to 0.1
+      nmsRadius: 10,
       asynch: true,
     );
-    print("len:${recognition.length}");
-    log(recognition.toString());
     // Extract keypoints from recognition
     if (recognition.length > 0) {
       setState(() {
         keyPoints = new Map<int, dynamic>.from(recognition[0]['keypoints']);
       });
-      setState(() {
-        loading = false;
-      });
+    } else {
+      keyPoints = {};
     }
+    setState(() {
+      loading = false;
+    });
   }
 
   @override
@@ -105,45 +99,46 @@ class _ImageInputState extends State<ImageInput> {
 
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
-    return Column(
-      children: [
-        loading
-            ? Text(
-                'No Image Taken',
-                textAlign: TextAlign.center,
-              )
-            : FittedBox(
-                child: SizedBox(
-                  width: image.width.toDouble(),
-                  height: image.height.toDouble(),
-                  child: CustomPaint(
-                    painter: CirclePainter(keyPoints, image),
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          loading
+              ? Text(
+                  'No Image Taken',
+                  textAlign: TextAlign.center,
+                )
+              : FittedBox(
+                  child: SizedBox(
+                    width: image.width.toDouble(),
+                    height: image.height.toDouble(),
+                    child: CustomPaint(
+                      painter: CirclePainter(keyPoints, image),
+                    ),
                   ),
                 ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Expanded(
+                child: FlatButton.icon(
+                  icon: Icon(Icons.photo_camera),
+                  label: Text('カメラ'),
+                  textColor: Theme.of(context).primaryColor,
+                  onPressed: _takePicture,
+                ),
               ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Expanded(
-              child: FlatButton.icon(
-                icon: Icon(Icons.photo_camera),
-                label: Text('カメラ'),
-                textColor: Theme.of(context).primaryColor,
-                onPressed: _takePicture,
+              Expanded(
+                child: FlatButton.icon(
+                  icon: Icon(Icons.photo_library),
+                  label: Text('ギャラリー'),
+                  textColor: Theme.of(context).primaryColor,
+                  onPressed: _getImageFromGallery,
+                ),
               ),
-            ),
-            Expanded(
-              child: FlatButton.icon(
-                icon: Icon(Icons.photo_library),
-                label: Text('ギャラリー'),
-                textColor: Theme.of(context).primaryColor,
-                onPressed: _getImageFromGallery,
-              ),
-            ),
-          ],
-        ),
-      ],
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
@@ -160,19 +155,18 @@ class CirclePainter extends CustomPainter {
       canvas.drawImage(image, Offset(0, 0), paint);
     }
     paint.color = Colors.red;
-    params.forEach((index, param) {
-      // print("x:${size.width * param['x']}, y: ${size.height * param['y']}");
-      canvas.drawCircle(
-          Offset(size.width * param['x'] * 1.8, size.height * param['y'] * 2),
-          10,
-          paint);
-    });
-    // print(size.width);
-    // print(size.height);
-    print("Done!");
+    if (params.isNotEmpty) {
+      params.forEach((index, param) {
+        canvas.drawCircle(
+            Offset(size.width * param['x'], size.height * param['y']),
+            10,
+            paint);
+      });
+      print("Done!");
+    }
   }
 
   @override
-  bool shouldRepaint(covariant CirclePainter oldDelegate) =>
-      image != oldDelegate.image || params != oldDelegate.params;
+  bool shouldRepaint(covariant CirclePainter oldDelegate) => false;
+  // image != oldDelegate.image || params != oldDelegate.params;
 }

@@ -1,8 +1,8 @@
 # This is a generated file; do not edit or check into version control.
-flutter_plugin_android_lifecycle=/home/yusuke/.pub-cache/hosted/pub.dartlang.org/flutter_plugin_android_lifecycle-1.0.11/
-image_picker=/home/yusuke/.pub-cache/hosted/pub.dartlang.org/image_picker-0.6.7+14/
-path_provider=/home/yusuke/.pub-cache/hosted/pub.dartlang.org/path_provider-1.6.24/
-path_provider_linux=/home/yusuke/.pub-cache/hosted/pub.dartlang.org/path_provider_linux-0.0.1+2/
-path_provider_macos=/home/yusuke/.pub-cache/hosted/pub.dartlang.org/path_provider_macos-0.0.4+6/
-path_provider_windows=/home/yusuke/.pub-cache/hosted/pub.dartlang.org/path_provider_windows-0.0.4+3/
-tflite=/home/yusuke/.pub-cache/hosted/pub.dartlang.org/tflite-1.1.1/
+flutter_plugin_android_lifecycle=/home/yusuke/software/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_plugin_android_lifecycle-1.0.11/
+image_picker=/home/yusuke/software/flutter/.pub-cache/hosted/pub.dartlang.org/image_picker-0.6.7+14/
+path_provider=/home/yusuke/software/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider-1.6.24/
+path_provider_linux=/home/yusuke/software/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_linux-0.0.1+2/
+path_provider_macos=/home/yusuke/software/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_macos-0.0.4+6/
+path_provider_windows=/home/yusuke/software/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_windows-0.0.4+3/
+tflite=/home/yusuke/software/flutter/.pub-cache/hosted/pub.dartlang.org/tflite-1.1.1/
