@@ -1,4 +1,4 @@
-#Sun Dec 06 08:41:55 JST 2020
-base.0=/home/yusuke/Documents/github/pose_estimation_flutter/build/app/intermediates/dex/debug/mergeDexDebug/out/classes.dex
-renamed.0=classes.dex
+#Sun Dec 06 01:10:07 JST 2020
+base.0=C\:\\Users\\kisis\\Documents\\GitHub\\pose_estimation_flutter\\build\\app\\intermediates\\dex\\debug\\mergeDexDebug\\out\\classes.dex
 path.0=classes.dex
+renamed.0=classes.dex
