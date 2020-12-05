@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'dart:ui' as ui;
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,8 +22,14 @@ class _ImageInputState extends State<ImageInput> {
   String resultText = '';
   bool isHotdog = false;
   bool isRecognized = false;
+  bool loading = true;
+  Map<int, dynamic> keyPoints;
+  ui.Image image;
 
   Future<void> _takePicture() async {
+    setState(() {
+      loading = true;
+    });
     final imageFile = await picker.getImage(
       source: ImageSource.camera,
     );
@@ -35,6 +43,9 @@ class _ImageInputState extends State<ImageInput> {
   }
 
   Future<void> _getImageFromGallery() async {
+    setState(() {
+      loading = true;
+    });
     final imageFile = await picker.getImage(
       source: ImageSource.gallery,
     );
@@ -59,17 +70,29 @@ class _ImageInputState extends State<ImageInput> {
     }
   }
 
-  Future predictHotdog(File image) async {
-    var recognition = await Tflite.runPoseNetOnImage(
-      path: image.path,
+  Future predictHotdog(File imageFile) async {
+    final imageByte = await imageFile.readAsBytes();
+    image = await decodeImageFromList(imageByte);
+    // Prediction
+    List recognition = await Tflite.runPoseNetOnImage(
+      path: imageFile.path,
       imageMean: 117, // defaults to 117.0
       imageStd: 117, // defaults to 1.0
       numResults: 2, // defaults to 5
       threshold: 0.2, // defaults to 0.1
       asynch: true,
     );
-
-    print(recognition);
+    print("len:${recognition.length}");
+    log(recognition.toString());
+    // Extract keypoints from recognition
+    if (recognition.length > 0) {
+      setState(() {
+        keyPoints = new Map<int, dynamic>.from(recognition[0]['keypoints']);
+      });
+      setState(() {
+        loading = false;
+      });
+    }
   }
 
   @override
@@ -82,63 +105,23 @@ class _ImageInputState extends State<ImageInput> {
 
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
     return Column(
       children: [
-        Stack(
-          children: [
-            Container(
-              width: 400,
-              height: 480,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                border: Border.all(width: 1, color: Colors.grey),
+        loading
+            ? Text(
+                'No Image Taken',
+                textAlign: TextAlign.center,
+              )
+            : FittedBox(
+                child: SizedBox(
+                  width: image.width.toDouble(),
+                  height: image.height.toDouble(),
+                  child: CustomPaint(
+                    painter: CirclePainter(keyPoints, image),
+                  ),
+                ),
               ),
-              child: _storedImage != null
-                  ? Image.file(
-                      _storedImage,
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                    )
-                  : Text(
-                      'No Image Taken',
-                      textAlign: TextAlign.center,
-                    ),
-            ),
-            isRecognized
-                ? Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          color: isHotdog ? Colors.green : Colors.red,
-                          padding: EdgeInsets.all(10),
-                          alignment: isHotdog
-                              ? Alignment.topCenter
-                              : Alignment.bottomCenter,
-                          child: Row(
-                            children: [
-                              Icon(
-                                isHotdog ? Icons.check : Icons.clear,
-                                size: 28,
-                                color: Colors.white,
-                              ),
-                              Expanded(
-                                child: Text(
-                                  "$resultText",
-                                  style: TextStyle(
-                                      fontSize: 28,
-                                      fontWeight: FontWeight.bold),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  )
-                : Container(),
-          ],
-        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
@@ -163,4 +146,33 @@ class _ImageInputState extends State<ImageInput> {
       ],
     );
   }
+}
+
+class CirclePainter extends CustomPainter {
+  final Map params;
+  final ui.Image image;
+  CirclePainter(this.params, this.image);
+
+  @override
+  void paint(ui.Canvas canvas, Size size) {
+    final paint = Paint();
+    if (image != null) {
+      canvas.drawImage(image, Offset(0, 0), paint);
+    }
+    paint.color = Colors.red;
+    params.forEach((index, param) {
+      // print("x:${size.width * param['x']}, y: ${size.height * param['y']}");
+      canvas.drawCircle(
+          Offset(size.width * param['x'] * 1.8, size.height * param['y'] * 2),
+          10,
+          paint);
+    });
+    // print(size.width);
+    // print(size.height);
+    print("Done!");
+  }
+
+  @override
+  bool shouldRepaint(covariant CirclePainter oldDelegate) =>
+      image != oldDelegate.image || params != oldDelegate.params;
 }

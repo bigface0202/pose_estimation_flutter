@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "/home/yusuke/Documents/FlutterProjects/pose_estimation/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values/values.xml",
+            "outputFile": "/home/yusuke/Documents/github/pose_estimation_flutter/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values/values.xml",
             "map": [
                 {
-                    "source": "/home/yusuke/Documents/FlutterProjects/pose_estimation/android/app/src/main/res/values/styles.xml",
+                    "source": "/home/yusuke/Documents/github/pose_estimation_flutter/android/app/src/main/res/values/styles.xml",
                     "from": {
                         "startLines": "3,14",
                         "startColumns": "4,4",
