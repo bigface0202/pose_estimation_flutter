@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:ui' as ui;
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,9 +18,6 @@ class ImageInput extends StatefulWidget {
 class _ImageInputState extends State<ImageInput> {
   // File _storedImage;
   final picker = ImagePicker();
-  String resultText = '';
-  bool isHotdog = false;
-  bool isRecognized = false;
   bool loading = true;
   Map<int, dynamic> keyPoints;
   ui.Image image;
@@ -36,7 +32,7 @@ class _ImageInputState extends State<ImageInput> {
     if (imageFile == null) {
       return;
     }
-    predictHotdog(File(imageFile.path));
+    poseEstimation(File(imageFile.path));
   }
 
   Future<void> _getImageFromGallery() async {
@@ -49,7 +45,7 @@ class _ImageInputState extends State<ImageInput> {
     if (imageFile == null) {
       return;
     }
-    predictHotdog(File(imageFile.path));
+    poseEstimation(File(imageFile.path));
   }
 
   static Future loadModel() async {
@@ -63,7 +59,7 @@ class _ImageInputState extends State<ImageInput> {
     }
   }
 
-  Future predictHotdog(File imageFile) async {
+  Future poseEstimation(File imageFile) async {
     final imageByte = await imageFile.readAsBytes();
     image = await decodeImageFromList(imageByte);
     // Prediction
@@ -100,44 +96,55 @@ class _ImageInputState extends State<ImageInput> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: Column(
-        children: [
-          loading
-              ? Text(
-                  'No Image Taken',
-                  textAlign: TextAlign.center,
-                )
-              : FittedBox(
-                  child: SizedBox(
-                    width: image.width.toDouble(),
-                    height: image.height.toDouble(),
-                    child: CustomPaint(
-                      painter: CirclePainter(keyPoints, image),
+      child: Container(
+        padding: EdgeInsets.all(10),
+        child: Column(
+          children: [
+            loading
+                ? Container(
+                    width: 380,
+                    height: 500,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      border: Border.all(width: 1, color: Colors.grey),
+                    ),
+                    child: Text(
+                      'No Image Taken',
+                      textAlign: TextAlign.center,
+                    ),
+                  )
+                : FittedBox(
+                    child: SizedBox(
+                      width: image.width.toDouble(),
+                      height: image.height.toDouble(),
+                      child: CustomPaint(
+                        painter: CirclePainter(keyPoints, image),
+                      ),
                     ),
                   ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Expanded(
+                  child: FlatButton.icon(
+                    icon: Icon(Icons.photo_camera),
+                    label: Text('カメラ'),
+                    textColor: Theme.of(context).primaryColor,
+                    onPressed: _takePicture,
+                  ),
                 ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Expanded(
-                child: FlatButton.icon(
-                  icon: Icon(Icons.photo_camera),
-                  label: Text('カメラ'),
-                  textColor: Theme.of(context).primaryColor,
-                  onPressed: _takePicture,
+                Expanded(
+                  child: FlatButton.icon(
+                    icon: Icon(Icons.photo_library),
+                    label: Text('ギャラリー'),
+                    textColor: Theme.of(context).primaryColor,
+                    onPressed: _getImageFromGallery,
+                  ),
                 ),
-              ),
-              Expanded(
-                child: FlatButton.icon(
-                  icon: Icon(Icons.photo_library),
-                  label: Text('ギャラリー'),
-                  textColor: Theme.of(context).primaryColor,
-                  onPressed: _getImageFromGallery,
-                ),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

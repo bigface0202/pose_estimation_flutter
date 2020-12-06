@@ -15,7 +15,7 @@ class IndexScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('SEE FOOD'),
+        title: Text('POSE ESTIMATION'),
       ),
       body: ImageInput(_selectImage),
     );
