@@ -1,4 +1,9 @@
 # This is a generated file; do not edit or check into version control.
-flutter_plugin_android_lifecycle=C:\\sdk\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\flutter_plugin_android_lifecycle-1.0.11\\
-image_picker=C:\\sdk\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\image_picker-0.6.7+14\\
-tflite=C:\\sdk\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\tflite-1.1.1\\
+camera=/home/yusuke/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/camera-0.5.8+17/
+flutter_plugin_android_lifecycle=/home/yusuke/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_plugin_android_lifecycle-1.0.11/
+image_picker=/home/yusuke/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/image_picker-0.6.7+15/
+path_provider=/home/yusuke/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider-1.6.24/
+path_provider_linux=/home/yusuke/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_linux-0.0.1+2/
+path_provider_macos=/home/yusuke/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_macos-0.0.4+6/
+path_provider_windows=/home/yusuke/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_windows-0.0.4+3/
+tflite=/home/yusuke/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/tflite-1.1.1/

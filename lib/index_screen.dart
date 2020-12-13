@@ -5,6 +5,7 @@ import "package:flutter/material.dart";
 import "./image_input.dart";
 
 class IndexScreen extends StatelessWidget {
+  // File _pickedImage;
   File _pickedImage;
 
   void _selectImage(File pickedImage) {

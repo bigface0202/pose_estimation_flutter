@@ -6,6 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tflite/tflite.dart';
 
+import 'camera_feed.dart';
+
 class ImageInput extends StatefulWidget {
   final Function onSelectImage;
 
@@ -19,7 +21,7 @@ class _ImageInputState extends State<ImageInput> {
   // File _storedImage;
   final picker = ImagePicker();
   bool loading = true;
-  Map<int, dynamic> keyPoints;
+  Map<int, dynamic> keyPoints = {};
   ui.Image image;
 
   Future<void> _takePicture() async {
@@ -103,7 +105,7 @@ class _ImageInputState extends State<ImageInput> {
             loading
                 ? Container(
                     width: 380,
-                    height: 500,
+                    height: 400,
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       border: Border.all(width: 1, color: Colors.grey),
@@ -123,12 +125,15 @@ class _ImageInputState extends State<ImageInput> {
                     ),
                   ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Expanded(
                   child: FlatButton.icon(
                     icon: Icon(Icons.photo_camera),
-                    label: Text('カメラ'),
+                    label: Text(
+                      'カメラ',
+                      style: TextStyle(fontSize: 8),
+                    ),
                     textColor: Theme.of(context).primaryColor,
                     onPressed: _takePicture,
                   ),
@@ -136,9 +141,25 @@ class _ImageInputState extends State<ImageInput> {
                 Expanded(
                   child: FlatButton.icon(
                     icon: Icon(Icons.photo_library),
-                    label: Text('ギャラリー'),
+                    label: Text(
+                      'ギャラリー',
+                      style: TextStyle(fontSize: 8),
+                    ),
                     textColor: Theme.of(context).primaryColor,
                     onPressed: _getImageFromGallery,
+                  ),
+                ),
+                Expanded(
+                  child: FlatButton.icon(
+                    icon: Icon(Icons.photo_library),
+                    label: Text(
+                      'リアルタイム',
+                      style: TextStyle(fontSize: 8),
+                    ),
+                    textColor: Theme.of(context).primaryColor,
+                    onPressed: () {
+                      Navigator.of(context).pushNamed(CameraFeed.routeName);
+                    },
                   ),
                 ),
               ],
