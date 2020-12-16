@@ -1,7 +1,8 @@
+import 'dart:typed_data';
 import 'dart:ui' as ui;
-import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:camera/camera.dart';
 import 'package:tflite/tflite.dart';
 
@@ -19,6 +20,19 @@ class _CameraFeedState extends State<CameraFeed> {
   bool isDetecting = false;
   Map<int, dynamic> keyPoints = {};
   ui.Image image;
+
+  poseEstimation(CameraImage img) async {
+    List results;
+    results = await Tflite.runPoseNetOnFrame(
+      bytesList: img.planes.map((plane) {
+        return plane.bytes;
+      }).toList(),
+      imageHeight: img.height,
+      imageWidth: img.width,
+      numResults: 1,
+    );
+    return results;
+  }
 
   @override
   void initState() {
@@ -44,14 +58,15 @@ class _CameraFeedState extends State<CameraFeed> {
               (CameraImage img) async {
                 if (!isDetecting) {
                   isDetecting = true;
-                  List recognition = await Tflite.runPoseNetOnFrame(
-                    bytesList: img.planes.map((plane) {
-                      return plane.bytes;
-                    }).toList(),
-                    imageHeight: img.height,
-                    imageWidth: img.width,
-                    numResults: 1,
-                  );
+                  // List recognition = await Tflite.runPoseNetOnFrame(
+                  //   bytesList: img.planes.map((plane) {
+                  //     return plane.bytes;
+                  //   }).toList(),
+                  //   imageHeight: img.height,
+                  //   imageWidth: img.width,
+                  //   numResults: 1,
+                  // );
+                  List recognition = await compute(poseEstimation, img);
                   if (recognition.length > 0) {
                     // Should check mounted because setState is called after disposed
                     if (!mounted) {
